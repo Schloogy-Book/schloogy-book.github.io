@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template - Woordenboek</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="icon" href="../icons/favicon.ico" type="image/x-icon">
+    <script defer src="../script.js"></script>
+</head>
+<body data-page="Template">
+    <header>
+        <div class="header-top">
+            <div class="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <nav class="navigation nav-menu">
+                <a href="../index.html">Home</a>
+                <a href="../woordenlijst.html">Woordenlijst</a>
+                <a href="" onclick="alert('De rekenmachine bestaat nog niet.')">Rekenmachine</a>
+            </nav>
+            <div class="search-wrapper">
+                <input type="text" name="search" id="search" placeholder="Zoek een woord" autocomplete="off">
+                <button><i class="fa fa-search"></i></button>
+                <div class="results">
+                    <ul>
+                        <!-- Results will be populated here -->
+                    </ul>
+                </div>
+            </div>
+            <button id="sanceronies" class="sanceronies">
+                <span class="title">Sanceronies</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="overlay"></div>
+
+    <main>
+        <div class="container" id="Woord-div">
+            <div class="word-header">
+                <h1>Template - TS</h1>
+                <button class="soundbutton" id="sound-toggle" data-sound="uitspraak/Woord.mp3"></button>
+            </div>
+            <hr>
+            <h2><span class="bold-grey">[Uitspraak]</span> Uitspraak die te gebruiken is als compliment om unieke creativiteit te waarderen. - "Pop up, creativity!"</h2>
+        </div>
+    </main>
+
+    <audio id="uitspraak" preload="auto"></audio>
+</body>
+</html>
