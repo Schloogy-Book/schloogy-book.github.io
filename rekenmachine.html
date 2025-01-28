@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    .calculator {
+      background-color: #fff;
+      padding: 0;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 500px; /* Limiting the width for larger screens */
+      height: 100%;
+      max-height: 700px; /* Limiting the height */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .display {
+      width: 100%;
+      height: 70px;
+      background-color: #eaeaea;
+      border: none;
+      text-align: right;
+      padding: 15px;
+      font-size: 30px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0; /* Remove the gap between the buttons */
+      width: 100%;
+      height: 100%; /* Ensuring buttons fill available space */
+    }
+
+    button {
+      width: 100%;
+      height: 80px; /* Increased height for bigger buttons */
+      font-size: 24px; /* Increased font size */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .operator {
+      background-color: #ff5722;
+    }
+
+    .operator:hover {
+      background-color: #e64a19;
+    }
+
+    .equals {
+      grid-column: span 2; /* Make the equals button span two columns */
+      background-color: #4caf50;
+    }
+
+    .equals:hover {
+      background-color: #388e3c;
+    }
+
+    .clear {
+      background-color: #f44336;
+    }
+
+    .clear:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <input type="text" id="display" class="display" disabled>
+    <div class="buttons">
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button class="operator" onclick="chooseOperator('/')">/</button>
+
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button class="operator" onclick="chooseOperator('*')">*</button>
+
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button class="operator" onclick="chooseOperator('-')">-</button>
+
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="appendNumber('.')">.</button>
+      <button class="clear" onclick="clearDisplay()">C</button>
+      <button class="operator" onclick="chooseOperator('+')">+</button>
+
+      <button class="equals" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let currentOperand = '';
+    let previousOperand = '';
+    let operator = null;
+    let isResultDisplayed = false;
+
+    const specialNumbers = {
+      1: 'Schloogy',
+      5: 'Knuist',
+      10: 'Bomba',
+      20: 'Sherb',
+      100: 'Boemba',
+      1000: 'Hoppy'
+    };
+
+    function appendNumber(number) {
+      const display = document.getElementById('display');
+      
+      // If a result is displayed, clear the display when a new number is pressed
+      if (isResultDisplayed) {
+        currentOperand = number;
+        isResultDisplayed = false;  // Reset the flag
+        display.value = currentOperand;
+        return;
+      }
+
+      // Prevent multiple dots in the same number
+      if (number === '.' && currentOperand.includes('.')) return;
+      
+      currentOperand += number;
+      display.value = currentOperand;
+    }
+
+    function chooseOperator(selectedOperator) {
+      if (currentOperand === '') return;
+      if (previousOperand !== '') calculate();
+      operator = selectedOperator;
+      previousOperand = currentOperand;
+      currentOperand = '';
+    }
+
+    function clearDisplay() {
+      currentOperand = '';
+      previousOperand = '';
+      operator = null;
+      isResultDisplayed = false;  // Reset result flag when cleared
+      document.getElementById('display').value = '';
+    }
+
+    function calculate() {
+      const display = document.getElementById('display');
+      let computation;
+      let prev = parseFloat(previousOperand);
+      let current = parseFloat(currentOperand);
+
+      if (isNaN(prev) || isNaN(current)) return;
+
+      // Perform the calculation using the numeric values
+      switch (operator) {
+        case '+':
+          computation = prev + current;
+          break;
+        case '-':
+          computation = prev - current;
+          break;
+        case '*':
+          computation = prev * current;
+          break;
+        case '/':
+          computation = prev / current;
+          break;
+        default:
+          return;
+      }
+
+      // After calculating, convert the result into the special number format
+      currentOperand = handleSpecialNumber(computation);
+      operator = null;
+      previousOperand = '';
+
+      display.value = currentOperand;
+
+      // Mark that the result is displayed
+      isResultDisplayed = true;
+    }
+
+    function handleSpecialNumber(value) {
+      // This function handles both integer and decimal parts
+      let result = value.toString();
+      let resultParts = result.split('.');
+
+      // Process the integer part (resultParts[0])
+      let integerPart = parseInt(resultParts[0]);
+      let integerSpecial = specialNumbers[integerPart];
+
+      if (integerSpecial) {
+        integerPart = integerSpecial;
+      } else {
+        integerPart = resultParts[0];  // If no special number, use the number itself
+      }
+
+      // Handle the decimal part: Only process if it's a valid decimal number (like .5)
+      let decimalPart = resultParts[1] ? '.' + resultParts[1] : '';
+      if (decimalPart) {
+        decimalPart = decimalPart.split('').map(num => {
+          return specialNumbers[parseInt(num)] || num;
+        }).join('');
+      }
+
+      return `${integerPart}${decimalPart}`;
+    }
+
+    function handleDecomposition(value) {
+      // This function handles decomposing numbers like 30 into their special parts
+      let decomposition = [];
+      let remainingValue = value;
+
+      // Decompose using special numbers
+      for (let num in specialNumbers) {
+        num = parseInt(num);
+        if (remainingValue >= num) {
+          let quotient = Math.floor(remainingValue / num);
+          for (let i = 0; i < quotient; i++) {
+            decomposition.push(specialNumbers[num]);
+          }
+          remainingValue -= quotient * num;
+        }
+      }
+
+      return decomposition.join(' * ');
+    }
+  </script>
+</body>
+</html>
